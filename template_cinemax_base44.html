@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CineMax - Streaming de Filmes e Séries</title>
+<style>
+  /* Reset básico */
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+  body {
+    background-color: #121212;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  a {
+    color: #e50914;
+    text-decoration: none;
+  }
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 60px;
+    background-color: #141414;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 10;
+  }
+  header .logo {
+    font-weight: 700;
+    font-size: 24px;
+    color: #e50914;
+    cursor: pointer;
+  }
+  nav {
+    margin-left: 30px;
+    display: flex;
+    gap: 20px;
+  }
+  nav a {
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    transition: background-color 0.3s ease;
+  }
+  nav a:hover {
+    background-color: #e50914;
+    color: #121212;
+    border-radius: 4px;
+  }
+  main {
+    padding-top: 80px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  /* Banner principal */
+  .banner {
+    position: relative;
+    height: 400px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 40px;
+    background-size: cover;
+    background-position: center center;
+  }
+  .banner-content {
+    position: absolute;
+    bottom: 40px;
+    left: 30px;
+    color: white;
+    max-width: 600px;
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+  }
+  .banner-content h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+  .banner-content p {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  .btn-play {
+    background-color: #e50914;
+    border: none;
+    color: white;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .btn-play:hover {
+    background-color: #b20710;
+  }
+  /* Seções de categorias */
+  .category-section {
+    margin-bottom: 50px;
+  }
+  .category-section h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  .movies-row {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+  .movies-row::-webkit-scrollbar {
+    height: 8px;
+  }
+  .movies-row::-webkit-scrollbar-thumb {
+    background-color: #e50914;
+    border-radius: 4px;
+  }
+  .movie-card {
+    min-width: 160px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .movie-card:hover {
+    transform: scale(1.1);
+    z-index: 5;
+  }
+  .movie-card img {
+    width: 100%;
+    display: block;
+  }
+  .movie-info {
+    position: absolute;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(18,18,18,0.9), rgba(18,18,18,0));
+    width: 100%;
+    padding: 10px;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  /* Player responsivo */
+  .player-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    margin: 40px auto;
+    max-width: 960px;
+  }
+  .player-container iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  /* Página do filme */
+  .movie-page {
+    max-width: 900px;
+    margin: 80px auto 40px;
+    padding: 0 20px;
+  }
+  .movie-page h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #e50914;
+  }
+  .movie-page img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  .movie-description {
+    font-size: 18px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    color: #ddd;
+  }
+  .tags {
+    margin-bottom: 30px;
+  }
+  .tag {
+    display: inline-block;
+    background-color: #e50914;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    margin-right: 10px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">CineMax</div>
+  <nav>
+    <a href="#acao">Ação</a>
+    <a href="#comedia">Comédia</a>
+    <a href="#drama">Drama</a>
+    <a href="#series">Séries</a>
+  </nav>
+</header>
+
+<main>
+  <section class="banner" style="background-image: url('https://i.imgur.com/0FjxqfO.jpg');" id="destaque">
+    <div class="banner-content">
+      <h1>O Último Guardião</h1>
+      <p>Um herói solitário enfrenta forças obscuras para salvar o mundo.</p>
+      <button class="btn-play" onclick="location.href='#filme1'">Assistir Agora</button>
+    </div>
+  </section>
+
+  <!-- Categorias -->
+  <section class="category-section" id="acao">
+    <h2>Ação</h2>
+    <div class="movies-row">
+      <div class="movie-card" onclick="location.href='#filme1'">
+        <img src="https://i.imgur.com/0FjxqfO.jpg" alt="O Último Guardião" />
+        <div class="movie-info">O Último Guardião</div>
+      </div>
+      <div class="movie-card" onclick="location.href='#filme2'">
+        <img src="https://i.imgur.com/0FsuvIU.jpg" alt="Caos Urbano" />
+        <div class="movie-info">Caos Urbano</div>
+      </div>
+      <div class="movie-card" onclick="location.href='#filme3'">
+        <img src="https://i.imgur.com/NekL7Jz.jpg" alt="Missão Impossível: Zero" />
+        <div class="movie-info">Missão Impossível: Zero</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="category-section" id="comedia">
+    <h2>Comédia</h2>
+    <div class="movies-row">
+      <div class="movie-card" onclick="location.href='#filme4'">
+        <img src="https://i.imgur.com/dJv4oYk.jpg" alt="Risos em Dobro" />
+        <div class="movie-info">Risos em Dobro</div>
+      </div>
+      <div class="movie-card" onclick="location.href='#filme5'">
+        <img src="https://i.imgur.com/yqFZ2KM.jpg" alt="O Chef Maluco" />
+        <div class="movie-info">O Chef Maluco</div>
+      </div>
+      <div class="movie-card" onclick="location.href='#filme6'">
+        <img src="https://i.imgur.com/eT1yRqc.jpg" alt="Amores e Desamores" />
+        <div class="movie-info">Amores e Desamores</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="category-section" id="drama">
+    <h2>Drama</h2>
+    <div class="movies-row">
+      <div class="movie-card" onclick="location.href='#filme7'">
+        <img src="https://i.imgur.com/CrclPrV.jpg" alt="Destino Cruel" />
+        <div class="movie-info">Destino Cruel</div>
+      </div>
+      <div class="movie-card" onclick="location.href='#filme8'">
+        <img src="https://i.imgur.com/FJMHcu5.jpg" alt="Sob a Chuva" />
+        <div class="movie-info">Sob a Chuva</div>
+      </div>
+      <div class="movie-card" onclick="location.href='#filme9'">
+        <img src="https://i.imgur.com/Yq2aZlM.jpg" alt="Laços Partidos" />
+        <div class="movie-info">Laços Partidos</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="category-section" id="series">
+    <h2>Séries</h2>
+    <div class="movies-row">
+      <div class="movie-card" onclick="location.href='#filme10'">
+        <img src="https://i.imgur.com/qItbgAi.jpg" alt="Mundo Sombrio" />
+        <div class="movie-info">Mundo Sombrio</div>
+      </div>
+      <div class="movie-card" onclick="location.href='#filme11'">
+        <img src="https://i.imgur.com/oeHZdS9.jpg" alt="Código Mortal" />
+        <div class="movie-info">Código Mortal</div>
+      </div>
+      <div class="movie-card" onclick="location.href='#filme12'">
+        <img src="https://i.imgur.com/44NZcoE.jpg" alt="O Legado Perdido" />
+        <div class="movie-info">O Legado Perdido</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Páginas individuais de filmes - Âncoras -->
+  <section class="movie-page" id="filme1">
+    <h1>O Último Guardião</h1>
+    <img src="https://i.imgur.com/0FjxqfO.jpg" alt="O Último Guardião" />
+    <p class="movie-description">Um herói solitário enfrenta forças obscuras para salvar o mundo.</p>
+    <div class="tags">
+      <span class="tag">Ação</span>
+      <span class="tag">Aventura</span>
+      <span class="tag">Fantasia</span>
+    </div>
+    <button class="btn-play" onclick="document.getElementById('player1').scrollIntoView({behavior:'smooth'})">Assistir Agora</button>
+    <div class="player-container" id="player1">
+      <!-- Cole aqui o iframe do Streamtape -->
+      <iframe src="https://streamtape.com/e/EXEMPLO" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <section class="movie-page" id="filme2">
+    <h1>Caos Urbano</h1>
+    <img src="https://i.imgur.com/0FsuvIU.jpg" alt="Caos Urbano" />
+    <p class="movie-description">Violência e ação nas ruas da grande metrópole.</p>
+    <div class="tags">
+      <span class="tag">Ação</span>
+      <span class="tag">Thriller</span>
+    </div>
+    <button class="btn-play" onclick="document.getElementById('player2').scrollIntoView({behavior:'smooth'})">Assistir Agora</button>
+    <div class="player-container" id="player2">
+      <!-- Cole aqui o iframe do Streamtape -->
+      <iframe src="https://streamtape.com/e/EXEMPLO" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <!-- Adicione mais seções individuais para cada filme similarmente -->
+  
+</main>
+
+</body>
+</html>
